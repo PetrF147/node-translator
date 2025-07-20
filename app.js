@@ -1,4 +1,3 @@
-
 const express = require('express');
 const fetch = require('node-fetch');
 const app = express();
@@ -11,23 +10,18 @@ app.post('/translate', async (req, res) => {
       method: 'POST',
       body: JSON.stringify({
         q,
-        source: source || "auto",   // Ustaw domyślnie auto
-        target: target || "de",     // Domyślnie na niemiecki
+        source: source || "auto",     // wykrywanie automatyczne
+        target,
         format: format || "text",
-        alternatives: 3,            // Nowy parametr
-        api_key: ""                 // Puste, bo publiczne API
+        alternatives: 3,              // dodatkowe tłumaczenia (opcjonalnie)
+        api_key: ""                   // (pozostaw puste)
       }),
       headers: { 'Content-Type': 'application/json' },
     });
     const data = await response.json();
-    if (!data.translatedText) {
-      console.error("LibreTranslate error:", data);
-      return res.status(500).json({ error: 'Translation error', details: data });
-    }
     res.json(data);
   } catch (e) {
-    console.error("Server error:", e);
-    res.status(500).json({ error: 'Translation error', details: e.message });
+    res.status(500).json({ error: 'Translation error' });
   }
 });
 
