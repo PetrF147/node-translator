@@ -1,30 +1,26 @@
 const express = require('express');
 const fetch = require('node-fetch');
 const app = express();
+
 app.use(express.json());
 
 app.post('/translate', async (req, res) => {
   const { q, source, target, format } = req.body;
   try {
-    const response = await fetch('https://libretranslate.de/translate', {
+    const response = await fetch('https://translate.astian.org/translate', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        q: q,
+        q,
         source: source || "auto",
-        target: target || "de",
+        target,
         format: format || "text",
-        api_key: "",
-        alternatives: 3
+        alternatives: 1,
+        api_key: "" // niepotrzebny, ale może być pusty
       }),
+      headers: { 'Content-Type': 'application/json' },
     });
-
     const data = await response.json();
-    if (data.translatedText) {
-      res.json({ translatedText: data.translatedText });
-    } else {
-      res.status(500).json({ error: data.error || 'Translation error', details: data });
-    }
+    res.json(data);
   } catch (e) {
     res.status(500).json({ error: 'Translation error', details: e.message });
   }
