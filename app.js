@@ -10,11 +10,11 @@ app.post('/translate', async (req, res) => {
       method: 'POST',
       body: JSON.stringify({
         q,
-        source: source || "auto",     // wykrywanie automatyczne
-        target,
+        source: source || "auto",
+        target: target || "de",
         format: format || "text",
-        alternatives: 3,              // dodatkowe tłumaczenia (opcjonalnie)
-        api_key: ""                   // (pozostaw puste)
+        alternatives: 3,
+        api_key: "" // jeśli nie masz API KEY, zostaw puste
       }),
       headers: { 'Content-Type': 'application/json' },
     });
@@ -28,5 +28,7 @@ app.post('/translate', async (req, res) => {
 app.get('/', (req, res) => res.send('Serwer tłumacza działa!'));
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Serwer działa na porcie ${PORT}`));
+
+
 
 
