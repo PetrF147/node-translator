@@ -8,20 +8,25 @@ app.post('/translate', async (req, res) => {
   try {
     const response = await fetch('https://libretranslate.de/translate', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        q,
+        q: q,
         source: source || "auto",
         target: target || "de",
         format: format || "text",
-        alternatives: 3,
-        api_key: "" // jeśli nie masz API KEY, zostaw puste
+        api_key: "",
+        alternatives: 3
       }),
-      headers: { 'Content-Type': 'application/json' },
     });
+
     const data = await response.json();
-    res.json(data);
+    if (data.translatedText) {
+      res.json({ translatedText: data.translatedText });
+    } else {
+      res.status(500).json({ error: data.error || 'Translation error', details: data });
+    }
   } catch (e) {
-    res.status(500).json({ error: 'Translation error' });
+    res.status(500).json({ error: 'Translation error', details: e.message });
   }
 });
 
